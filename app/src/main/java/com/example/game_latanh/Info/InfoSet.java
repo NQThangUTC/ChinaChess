@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-import com.example.game_latanh.Info.ChessInfo;
-
 
 public class InfoSet implements Serializable {
     private static final long serialVersionUID = 2194052829864919744L;

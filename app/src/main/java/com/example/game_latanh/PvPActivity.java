@@ -1,9 +1,10 @@
 package com.example.game_latanh;
 
-import android.content.SharedPreferences;
+import android.content.DialogInterface;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -15,27 +16,16 @@ import android.widget.Toast;
 
 import com.example.game_latanh.ChessMove.Rule;
 import com.example.game_latanh.CustomDialog.CommonDialog;
-import com.example.game_latanh.CustomDialog.SettingDialog;
 import com.example.game_latanh.CustomView.ChessView;
 import com.example.game_latanh.CustomView.RoundView;
 import com.example.game_latanh.Info.ChessInfo;
 import com.example.game_latanh.Info.InfoSet;
 import com.example.game_latanh.Info.Pos;
-import com.example.game_latanh.Info.SaveInfo;
 
 import static com.example.game_latanh.HomeActivity.MIN_CLICK_DELAY_TIME;
-import static com.example.game_latanh.HomeActivity.backMusic;
-import static com.example.game_latanh.HomeActivity.checkMusic;
-import static com.example.game_latanh.HomeActivity.clickMusic;
 import static com.example.game_latanh.HomeActivity.curClickTime;
 import static com.example.game_latanh.HomeActivity.lastClickTime;
-import static com.example.game_latanh.HomeActivity.playEffect;
-import static com.example.game_latanh.HomeActivity.playMusic;
-import static com.example.game_latanh.HomeActivity.selectMusic;
-import static com.example.game_latanh.HomeActivity.setting;
-import static com.example.game_latanh.HomeActivity.sharedPreferences;
-import static com.example.game_latanh.HomeActivity.stopMusic;
-import static com.example.game_latanh.HomeActivity.winMusic;
+
 
 
 public class PvPActivity extends AppCompatActivity implements View.OnTouchListener, View.OnClickListener {
@@ -50,26 +40,8 @@ public class PvPActivity extends AppCompatActivity implements View.OnTouchListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pvp);
         relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
-
-        if (SaveInfo.fileIsExists("ChessInfo_pvp.bin")) {
-            try {
-                chessInfo = SaveInfo.DeserializeChessInfo("ChessInfo_pvp.bin");
-            } catch (Exception e) {
-                Log.e("chen", e.toString());
-            }
-        } else {
-            chessInfo = new ChessInfo();
-        }
-
-        if (SaveInfo.fileIsExists("InfoSet_pvp.bin")) {
-            try {
-                infoSet = SaveInfo.DeserializeInfoSet("InfoSet_pvp.bin");
-            } catch (Exception e) {
-                Log.e("chen", e.toString());
-            }
-        } else {
-            infoSet = new InfoSet();
-        }
+        chessInfo = new ChessInfo();
+        infoSet = new InfoSet();
 
         roundView = new RoundView(this, chessInfo);
         relativeLayout.addView(roundView);
@@ -91,7 +63,7 @@ public class PvPActivity extends AppCompatActivity implements View.OnTouchListen
         chessView.setId(R.id.chessView);
 
         LayoutInflater inflater = LayoutInflater.from(this);
-        RelativeLayout buttonGroup = (RelativeLayout) inflater.inflate(R.layout.button_group, relativeLayout, false);
+        RelativeLayout buttonGroup = (RelativeLayout) inflater.inflate(R.layout.button_grouppvp, relativeLayout, false);
         relativeLayout.addView(buttonGroup);
 
         RelativeLayout.LayoutParams paramsV = (RelativeLayout.LayoutParams) buttonGroup.getLayoutParams();
@@ -126,13 +98,11 @@ public class PvPActivity extends AppCompatActivity implements View.OnTouchListen
                                     chessInfo.prePos = new Pos(i, j);
                                     chessInfo.IsChecked = true;
                                     chessInfo.ret = Rule.PossibleMoves(chessInfo.piece, i, j, chessInfo.piece[j][i]);
-                                    playEffect(selectMusic);
                                 }
                             } else {
                                 if (chessInfo.piece[j][i] >= 8 && chessInfo.piece[j][i] <= 14) {
                                     chessInfo.prePos = new Pos(i, j);
                                     chessInfo.ret = Rule.PossibleMoves(chessInfo.piece, i, j, chessInfo.piece[j][i]);
-                                    playEffect(selectMusic);
                                 } else if (chessInfo.ret.contains(new Pos(i, j))) {
                                     int tmp = chessInfo.piece[j][i];
                                     chessInfo.piece[j][i] = chessInfo.piece[chessInfo.prePos.y][chessInfo.prePos.x];
@@ -156,8 +126,6 @@ public class PvPActivity extends AppCompatActivity implements View.OnTouchListen
                                             e.printStackTrace();
                                         }
 
-                                        playEffect(clickMusic);
-
                                         int key = 0;
                                         if (Rule.isKingDanger(chessInfo.piece, false)) {
                                             key = 1;
@@ -166,34 +134,21 @@ public class PvPActivity extends AppCompatActivity implements View.OnTouchListen
                                             key = 2;
                                         }
                                         if (key == 1) {
-                                            playEffect(checkMusic);
                                             Toast toast = Toast.makeText(PvPActivity.this, "Chiếu Tướng", Toast.LENGTH_SHORT);
                                             toast.setGravity(Gravity.CENTER, 0, 0);
                                             toast.show();
                                         } else if (key == 2) {
-                                            playEffect(winMusic);
                                             chessInfo.status = 2;
-                                            Toast toast = Toast.makeText(PvPActivity.this, "Đỏ thắng", Toast.LENGTH_SHORT);
-                                            toast.setGravity(Gravity.CENTER, 0, 0);
-                                            toast.show();
+                                            resultDialog("Đỏ Thắng");
                                         }
 
                                         if (chessInfo.status == 1) {
-                                            if (chessInfo.peaceRound >= 60) {
+                                            if (chessInfo.peaceRound >= 60 ||                                    // Đi 60 nước chưa ăn được con nào -> hòa
+                                                    chessInfo.attackNum_B == 0 && chessInfo.attackNum_R == 0 || // 2 bên không còn quân tấn công -> hòa
+                                                    infoSet.ZobristInfo.get(chessInfo.ZobristKeyCheck)>=4)      // Vị trí lặp lại 4 lần -> hòa
+                                            {
                                                 chessInfo.status = 2;
-                                                Toast toast = Toast.makeText(PvPActivity.this, "Cờ Hòa", Toast.LENGTH_SHORT);
-                                                toast.setGravity(Gravity.CENTER, 0, 0);
-                                                toast.show();
-                                            } else if (chessInfo.attackNum_B == 0 && chessInfo.attackNum_R == 0) {
-                                                chessInfo.status = 2;
-                                                Toast toast = Toast.makeText(PvPActivity.this, "Cờ Hòa", Toast.LENGTH_SHORT);
-                                                toast.setGravity(Gravity.CENTER, 0, 0);
-                                                toast.show();
-                                            } else if (infoSet.ZobristInfo.get(chessInfo.ZobristKeyCheck) >= 4) {
-                                                chessInfo.status = 2;
-                                                Toast toast = Toast.makeText(PvPActivity.this, "Cờ Hòa", Toast.LENGTH_SHORT);
-                                                toast.setGravity(Gravity.CENTER, 0, 0);
-                                                toast.show();
+                                                resultDialog("Cờ Hòa");
                                             }
                                         }
                                     }
@@ -205,13 +160,11 @@ public class PvPActivity extends AppCompatActivity implements View.OnTouchListen
                                     chessInfo.prePos = new Pos(i, j);
                                     chessInfo.IsChecked = true;
                                     chessInfo.ret = Rule.PossibleMoves(chessInfo.piece, i, j, chessInfo.piece[j][i]);
-                                    playEffect(selectMusic);
                                 }
                             } else {
                                 if (chessInfo.piece[j][i] >= 1 && chessInfo.piece[j][i] <= 7) {
                                     chessInfo.prePos = new Pos(i, j);
                                     chessInfo.ret = Rule.PossibleMoves(chessInfo.piece, i, j, chessInfo.piece[j][i]);
-                                    playEffect(selectMusic);
                                 } else if (chessInfo.ret.contains(new Pos(i, j))) {
                                     int tmp = chessInfo.piece[j][i];
                                     chessInfo.piece[j][i] = chessInfo.piece[chessInfo.prePos.y][chessInfo.prePos.x];
@@ -235,7 +188,6 @@ public class PvPActivity extends AppCompatActivity implements View.OnTouchListen
                                             e.printStackTrace();
                                         }
 
-                                        playEffect(clickMusic);
 
                                         int key = 0;
                                         if (Rule.isKingDanger(chessInfo.piece, true)) {
@@ -245,34 +197,21 @@ public class PvPActivity extends AppCompatActivity implements View.OnTouchListen
                                             key = 2;
                                         }
                                         if (key == 1) {
-                                            playEffect(checkMusic);
                                             Toast toast = Toast.makeText(PvPActivity.this, "Chiếu Tướng", Toast.LENGTH_SHORT);
                                             toast.setGravity(Gravity.CENTER, 0, 0);
                                             toast.show();
                                         } else if (key == 2) {
-                                            playEffect(winMusic);
                                             chessInfo.status = 2;
-                                            Toast toast = Toast.makeText(PvPActivity.this, "Đen thắng", Toast.LENGTH_SHORT);
-                                            toast.setGravity(Gravity.CENTER, 0, 0);
-                                            toast.show();
+                                            resultDialog("Đen thắng");
                                         }
 
                                         if (chessInfo.status == 1) {
-                                            if (chessInfo.peaceRound >= 60) {
+                                            if (chessInfo.peaceRound >= 60 ||                                    // Đi 60 nước chưa ăn được con nào -> hòa
+                                                    chessInfo.attackNum_B == 0 && chessInfo.attackNum_R == 0 || // 2 bên không còn quân tấn công -> hòa
+                                                    infoSet.ZobristInfo.get(chessInfo.ZobristKeyCheck)>=4)      // Vị trí lặp lại 4 lần -> hòa
+                                            {
                                                 chessInfo.status = 2;
-                                                Toast toast = Toast.makeText(PvPActivity.this, "Cờ Hòa", Toast.LENGTH_SHORT);
-                                                toast.setGravity(Gravity.CENTER, 0, 0);
-                                                toast.show();
-                                            } else if (chessInfo.attackNum_B == 0 && chessInfo.attackNum_R == 0) {
-                                                chessInfo.status = 2;
-                                                Toast toast = Toast.makeText(PvPActivity.this, "Cờ Hòa", Toast.LENGTH_SHORT);
-                                                toast.setGravity(Gravity.CENTER, 0, 0);
-                                                toast.show();
-                                            } else if (infoSet.ZobristInfo.get(chessInfo.ZobristKeyCheck) >= 4) {
-                                                chessInfo.status = 2;
-                                                Toast toast = Toast.makeText(PvPActivity.this, "Cờ Hòa", Toast.LENGTH_SHORT);
-                                                toast.setGravity(Gravity.CENTER, 0, 0);
-                                                toast.show();
+                                                resultDialog("Cờ Hòa");
                                             }
                                         }
                                     }
@@ -315,15 +254,13 @@ public class PvPActivity extends AppCompatActivity implements View.OnTouchListen
         }
         curClickTime = lastClickTime;
 
-        playEffect(selectMusic);
 
         int viewId = view.getId();
         if (viewId == R.id.btn_retry) {
-            final CommonDialog retryDialog = new CommonDialog(this, "Trò chơi mới", "Bạn có chắc chắn muốn bắt đầu một vòng mới không?\n");
+            final CommonDialog retryDialog = new CommonDialog(this, "Trò chơi mới", "Bắt đầu game mới?\n");
             retryDialog.setOnClickBottomListener(new CommonDialog.OnClickBottomListener() {
                 @Override
                 public void onPositiveClick() {
-                    playEffect(selectMusic);
                     try {
                         chessInfo.setInfo(new ChessInfo());
                         infoSet.newInfo();
@@ -335,7 +272,6 @@ public class PvPActivity extends AppCompatActivity implements View.OnTouchListen
 
                 @Override
                 public void onNegtiveClick() {
-                    playEffect(selectMusic);
                     retryDialog.dismiss();
                 }
             });
@@ -351,55 +287,17 @@ public class PvPActivity extends AppCompatActivity implements View.OnTouchListen
                     e.printStackTrace();
                 }
             }
-        } else if (viewId == R.id.btn_setting) {
-            final SettingDialog settingDialog = new SettingDialog(this);
-            settingDialog.setOnClickBottomListener(new SettingDialog.OnClickBottomListener() {
-                @Override
-                public void onPositiveClick() {
-                    playEffect(selectMusic);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    boolean flag = false;
-                    if (setting.isMusicPlay != settingDialog.isMusicPlay) {
-                        setting.isMusicPlay = settingDialog.isMusicPlay;
-                        if (setting.isMusicPlay) {
-                            playMusic(backMusic);
-                        } else {
-                            stopMusic(backMusic);
-                        }
-                        editor.putBoolean("isMusicPlay", settingDialog.isMusicPlay);
-                        flag = true;
-                    }
-                    if (setting.isEffectPlay != settingDialog.isEffectPlay) {
-                        setting.isEffectPlay = settingDialog.isEffectPlay;
-                        editor.putBoolean("isEffectPlay", settingDialog.isEffectPlay);
-                        flag = true;
-                    }
-                    if (flag) {
-                        editor.commit();
-                    }
-                    settingDialog.dismiss();
-                }
-
-                @Override
-                public void onNegtiveClick() {
-                    playEffect(selectMusic);
-                    settingDialog.dismiss();
-                }
-            });
-            settingDialog.show();
         } else if (viewId == R.id.btn_back) {
-            final CommonDialog backDialog = new CommonDialog(this, "Thoát", "Bạn có chắc chắn muốn thoát không?");
+            final CommonDialog backDialog = new CommonDialog(this, "Thoát", "Xác nhận rằng bạn muốn thoát?");
             backDialog.setOnClickBottomListener(new CommonDialog.OnClickBottomListener() {
                 @Override
                 public void onPositiveClick() {
-                    playEffect(selectMusic);
                     backDialog.dismiss();
                     finish();
                 }
 
                 @Override
                 public void onNegtiveClick() {
-                    playEffect(selectMusic);
                     backDialog.dismiss();
                 }
             });
@@ -417,19 +315,17 @@ public class PvPActivity extends AppCompatActivity implements View.OnTouchListen
         curClickTime = lastClickTime;
 
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            final CommonDialog backDialog = new CommonDialog(this, "Thoát", "Bạn có chắc chắn muốn thoát không?");
+            final CommonDialog backDialog = new CommonDialog(this, "Thoát", "Xác nhận rằng bạn muốn thoát?");
             backDialog.setOnClickBottomListener(new CommonDialog.OnClickBottomListener() {
 
                 @Override
                 public void onPositiveClick() {
-                    playEffect(selectMusic);
                     backDialog.dismiss();
                     finish();
                 }
 
                 @Override
                 public void onNegtiveClick() {
-                    playEffect(selectMusic);
                     backDialog.dismiss();
                 }
             });
@@ -441,24 +337,39 @@ public class PvPActivity extends AppCompatActivity implements View.OnTouchListen
 
     @Override
     protected void onPause() {
-        stopMusic(backMusic);
         super.onPause();
     }
 
     @Override
     protected void onStop() {
-        try {
-            SaveInfo.SerializeChessInfo(chessInfo, "ChessInfo_pvp.bin");
-            SaveInfo.SerializeInfoSet(infoSet, "InfoSet_pvp.bin");
-        } catch (Exception e) {
-            Log.e("chen", e.toString());
-        }
         super.onStop();
     }
 
     @Override
     protected void onStart() {
-        playMusic(backMusic);
         super.onStart();
+    }
+    public void resultDialog(String result){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setTitle("Thong bao");
+        alertDialog.setIcon(R.mipmap.ic_launcher);
+        alertDialog.setMessage(result);
+        alertDialog.setPositiveButton("New Game", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                try {
+                    chessInfo.setInfo(new ChessInfo());
+                    infoSet.newInfo();
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        alertDialog.setNegativeButton("", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        alertDialog.show();
     }
 }

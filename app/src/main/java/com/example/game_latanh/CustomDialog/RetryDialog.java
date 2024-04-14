@@ -11,9 +11,6 @@ import android.widget.RadioGroup;
 
 import com.example.game_latanh.R;
 
-import static com.example.game_latanh.HomeActivity.playEffect;
-import static com.example.game_latanh.HomeActivity.selectMusic;
-
 public class RetryDialog extends Dialog implements RadioGroup.OnCheckedChangeListener {
     public Button posBtn, negBtn;
     public RadioGroup holdGroup;
@@ -75,7 +72,6 @@ public class RetryDialog extends Dialog implements RadioGroup.OnCheckedChangeLis
 
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
-        playEffect(selectMusic);
         RadioButton checked = (RadioButton) findViewById(radioGroup.getCheckedRadioButtonId());
         if (radioGroup.getId() == R.id.holdGroup) {
             if (checked.getId() == R.id.holdRed) {

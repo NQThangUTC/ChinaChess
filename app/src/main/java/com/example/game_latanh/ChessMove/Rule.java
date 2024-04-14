@@ -23,37 +23,37 @@ public class Rule {
             {3, 3, 3, 4, 4, 4, 3, 3, 3},
     };
     public static int[][] offsetX = new int[][]{
-            {0, 0, 1, -1},             //Tướng
-            {1, 1, -1, -1},            //Sĩ
-            {2, 2, -2, -2},            //Tượng
-            {1, 1, -1, -1},            //象眼
-            {1, 1, -1, -1, 2, 2, -2, -2},  //Mã
-            {0, 0, 0, 0, 1, 1, -1, -1},    //蹩马腿
-            {0},                    //卒
-            {-1, 0, 1},               //过河卒
-            {0},                    //兵
-            {-1, 0, 1},               //过河兵
-            {1, 1, -1, -1, 1, 1, -1, -1},  //反向蹩马腿
+            {0, 0, 1, -1},
+            {1, 1, -1, -1},
+            {2, 2, -2, -2},
+            {1, 1, -1, -1},
+            {1, 1, -1, -1, 2, 2, -2, -2},
+            {0, 0, 0, 0, 1, 1, -1, -1},
+            {0},
+            {-1, 0, 1},
+            {0},
+            {-1, 0, 1},
+            {1, 1, -1, -1, 1, 1, -1, -1},
     };
     public static int[][] offsetY = new int[][]{
-            {1, -1, 0, 0},             //帅 将
-            {1, -1, 1, -1},            //仕 士
-            {2, -2, 2, -2},            //相 象
-            {1, -1, 1, -1},            //象眼
-            {2, -2, 2, -2, 1, -1, 1, -1},  //马
-            {1, -1, 1, -1, 0, 0, 0, 0},    //蹩马腿
-            {1},                    //卒
-            {0, 1, 0},                //过河卒
-            {-1},                   //兵
-            {0, -1, 0},               //过河兵
-            {1, -1, 1, -1, 1, -1, 1, -1},  //反向蹩马腿
+            {1, -1, 0, 0},
+            {1, -1, 1, -1},
+            {2, -2, 2, -2},
+            {1, -1, 1, -1},
+            {2, -2, 2, -2, 1, -1, 1, -1},
+            {1, -1, 1, -1, 0, 0, 0, 0},
+            {1},
+            {0, 1, 0},
+            {-1},
+            {0, -1, 0},
+            {1, -1, 1, -1, 1, -1, 1, -1},
     };
 
     public static List<Pos> PossibleMoves(int[][] piece, int fromX, int fromY, int PieceID) {
         List<Pos> ret = new ArrayList<Pos>();
         int num;
         switch (PieceID) {
-            case 1://黑将
+            case 1:
                 num = 0;
                 for (int i = 0; i < offsetX[num].length; i++) {
                     int toX = fromX + offsetX[num][i];
@@ -67,7 +67,7 @@ public class Rule {
                     ret.add(eatPos1);
                 }
                 break;
-            case 2://黑士
+            case 2:
                 num = 1;
                 for (int i = 0; i < offsetX[num].length; i++) {
                     int toX = fromX + offsetX[num][i];
@@ -77,7 +77,7 @@ public class Rule {
                     }
                 }
                 break;
-            case 3://黑象
+            case 3:
                 num = 2;
                 for (int i = 0; i < offsetX[num].length; i++) {
                     int toX = fromX + offsetX[num][i];
@@ -89,8 +89,8 @@ public class Rule {
                     }
                 }
                 break;
-            case 4://黑马
-            case 11://红马
+            case 4:
+            case 11:
                 num = 4;
                 for (int i = 0; i < offsetX[num].length; i++) {
                     int toX = fromX + offsetX[num][i];
@@ -102,61 +102,61 @@ public class Rule {
                     }
                 }
                 break;
-            case 5://黑车
-            case 12: //红车
-                for (int i = fromY + 1; i < 10; i++) {//向下走
-                    if (CanMove(1, fromX, fromY, fromX, i, piece)) { //可以走时
+            case 5:
+            case 12:
+                for (int i = fromY + 1; i < 10; i++) {
+                    if (CanMove(1, fromX, fromY, fromX, i, piece)) {
                         ret.add(new Pos(fromX, i));
-                    } else {//不可以走时直接 break
+                    } else {
                         break;
                     }
                 }
-                for (int i = fromY - 1; i > -1; i--) {//向上走
-                    if (CanMove(1, fromX, fromY, fromX, i, piece)) {//可以走时
+                for (int i = fromY - 1; i > -1; i--) {
+                    if (CanMove(1, fromX, fromY, fromX, i, piece)) {
                         ret.add(new Pos(fromX, i));
-                    } else {//不可以走时
+                    } else {
                         break;
                     }
                 }
-                for (int j = fromX - 1; j > -1; j--) {//向走走
-                    if (CanMove(1, fromX, fromY, j, fromY, piece)) {//可以走时
+                for (int j = fromX - 1; j > -1; j--) {
+                    if (CanMove(1, fromX, fromY, j, fromY, piece)) {
                         ret.add(new Pos(j, fromY));
-                    } else {//不可以走时
+                    } else {
                         break;
                     }
                 }
-                for (int j = fromX + 1; j < 9; j++) {//向右走
-                    if (CanMove(1, fromX, fromY, j, fromY, piece)) {//可以走时
+                for (int j = fromX + 1; j < 9; j++) {
+                    if (CanMove(1, fromX, fromY, j, fromY, piece)) {
                         ret.add(new Pos(j, fromY));
-                    } else {//不可以走时
+                    } else {
                         break;
                     }
                 }
                 break;
-            case 6://黑炮
-            case 13://红炮
-                for (int i = fromY + 1; i < 10; i++) {//向下走
-                    if (CanMove(2, fromX, fromY, fromX, i, piece)) { //可以走时
+            case 6:
+            case 13:
+                for (int i = fromY + 1; i < 10; i++) {
+                    if (CanMove(2, fromX, fromY, fromX, i, piece)) {
                         ret.add(new Pos(fromX, i));
                     }
                 }
-                for (int i = fromY - 1; i > -1; i--) {//向上走
-                    if (CanMove(2, fromX, fromY, fromX, i, piece)) {//可以走时
+                for (int i = fromY - 1; i > -1; i--) {
+                    if (CanMove(2, fromX, fromY, fromX, i, piece)) {
                         ret.add(new Pos(fromX, i));
                     }
                 }
-                for (int j = fromX - 1; j > -1; j--) {//向走走
-                    if (CanMove(2, fromX, fromY, j, fromY, piece)) {//可以走时
+                for (int j = fromX - 1; j > -1; j--) {
+                    if (CanMove(2, fromX, fromY, j, fromY, piece)) {
                         ret.add(new Pos(j, fromY));
                     }
                 }
-                for (int j = fromX + 1; j < 9; j++) {//向右走
-                    if (CanMove(2, fromX, fromY, j, fromY, piece)) {//可以走时
+                for (int j = fromX + 1; j < 9; j++) {
+                    if (CanMove(2, fromX, fromY, j, fromY, piece)) {
                         ret.add(new Pos(j, fromY));
                     }
                 }
                 break;
-            case 7://黑卒
+            case 7:
                 if (InArea(fromX, fromY) == 1) {
                     num = 6;
                     for (int i = 0; i < offsetX[num].length; i++) {
@@ -177,7 +177,7 @@ public class Rule {
                     }
                 }
                 break;
-            case 8://红帅
+            case 8:
                 num = 0;
                 for (int i = 0; i < offsetX[num].length; i++) {
                     int toX = fromX + offsetX[num][i];
@@ -191,7 +191,7 @@ public class Rule {
                     ret.add(eatPos2);
                 }
                 break;
-            case 9://红士
+            case 9:
                 num = 1;
                 for (int i = 0; i < offsetX[num].length; i++) {
                     int toX = fromX + offsetX[num][i];
@@ -201,7 +201,7 @@ public class Rule {
                     }
                 }
                 break;
-            case 10://红象
+            case 10:
                 num = 2;
                 for (int i = 0; i < offsetX[num].length; i++) {
                     int toX = fromX + offsetX[num][i];
@@ -213,7 +213,7 @@ public class Rule {
                     }
                 }
                 break;
-            case 14://红兵
+            case 14:
                 if (InArea(fromX, fromY) == 3) {
                     num = 8;
                     for (int i = 0; i < offsetX[num].length; i++) {
@@ -256,7 +256,7 @@ public class Rule {
                 if (flag) break;
             }
 
-            for (int i = 0; i < offsetX[num].length; i++) {     //马
+            for (int i = 0; i < offsetX[num].length; i++) {
                 int toX = x + offsetX[num][i];
                 int toY = y + offsetY[num][i];
                 int blockX = x + offsetX[op_block_num][i];
@@ -265,7 +265,7 @@ public class Rule {
                     return true;
                 }
             }
-            for (int i = 5; i <= 6; i++) {  //车 炮
+            for (int i = 5; i <= 6; i++) {
                 List<Pos> moves = PossibleMoves(piece, x, y, i + 7);
                 Iterator<Pos> it = moves.iterator();
                 while (it.hasNext()) {
@@ -275,7 +275,7 @@ public class Rule {
                     }
                 }
             }
-            if (flyKing(2, x, y, piece).equals(new Pos(-1, -1)) == false) { //将
+            if (flyKing(2, x, y, piece).equals(new Pos(-1, -1)) == false) {
                 return true;
             }
             if (piece[y - 1][x] == 7 || piece[y][x - 1] == 7 || piece[y][x + 1] == 7) {
@@ -294,7 +294,7 @@ public class Rule {
                 if (flag) break;
             }
 
-            for (int i = 0; i < offsetX[num].length; i++) {     //马
+            for (int i = 0; i < offsetX[num].length; i++) {
                 int toX = x + offsetX[num][i];
                 int toY = y + offsetY[num][i];
                 int blockX = x + offsetX[op_block_num][i];
@@ -303,7 +303,7 @@ public class Rule {
                     return true;
                 }
             }
-            for (int i = 12; i <= 13; i++) {  //车 炮
+            for (int i = 12; i <= 13; i++) {
                 List<Pos> moves = PossibleMoves(piece, x, y, i - 7);
                 Iterator<Pos> it = moves.iterator();
                 while (it.hasNext()) {
@@ -313,7 +313,7 @@ public class Rule {
                     }
                 }
             }
-            if (flyKing(1, x, y, piece).equals(new Pos(-1, -1)) == false) { //将
+            if (flyKing(1, x, y, piece).equals(new Pos(-1, -1)) == false) {
                 return true;
             }
             if (piece[y + 1][x] == 14 || piece[y][x - 1] == 14 || piece[y][x + 1] == 14) {
@@ -378,7 +378,7 @@ public class Rule {
         return true;
     }
 
-    public static int InArea(int x, int y) { //0 棋盘外 1 黑盘 2 黑十字 3 红盘 4 红十字
+    public static int InArea(int x, int y) {
         if (x < 0 || x > 8 || y < 0 || y > 9) {
             return 0;
         }
@@ -400,7 +400,7 @@ public class Rule {
         int cnt = 0;
         boolean flag = false;
         int i;
-        if (id == 1) {  //将
+        if (id == 1) {
             for (i = fromY + 1; i <= 9; i++) {
                 if (piece[i][fromX] > 0 && piece[i][fromX] != 8) {
                     cnt++;
@@ -409,7 +409,7 @@ public class Rule {
                     break;
                 }
             }
-        } else {       //帅
+        } else {
             for (i = fromY - 1; i >= 0; i--) {
                 if (piece[i][fromX] > 0 && piece[i][fromX] != 1) {
                     cnt++;
@@ -433,7 +433,7 @@ public class Rule {
         if ((fromX != toX && fromY != toY) || IsSameSide(piece[fromY][fromX], piece[toY][toX]) == true) {
             return false;
         }
-        if (id == 1) {  //车
+        if (id == 1) {
             int start, finish;
             if (fromX == toX) {
                 if (fromY < toY) {
@@ -462,7 +462,7 @@ public class Rule {
                     }
                 }
             }
-        } else {   //炮
+        } else {   
             if (piece[toY][toX] == 0) {
                 int start, finish;
                 if (fromX == toX) {

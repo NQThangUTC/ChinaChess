@@ -218,27 +218,27 @@ public class ChessView extends SurfaceView implements SurfaceHolder.Callback {
 
     }
 
-    class TutorialThread extends Thread {//刷帧线程
-        public int span = 100;//睡眠100毫秒数
+    class TutorialThread extends Thread {
+        public int span = 100;
         public SurfaceHolder surfaceHolder;
 
         public TutorialThread(SurfaceHolder surfaceHolder) {
             this.surfaceHolder = surfaceHolder;
         }
 
-        public void run() {//重写的方法
-            Canvas c;//画布
-            while (true) {//循环绘制
+        public void run() {
+            Canvas c;
+            while (true) {
                 c = this.surfaceHolder.lockCanvas();
                 try {
-                    Draw(c);//绘制方法
+                    Draw(c);
                 } catch (Exception e) {
                 }
                 if (c != null) this.surfaceHolder.unlockCanvasAndPost(c);
                 try {
-                    Thread.sleep(span);//睡眠时间，单位是毫秒
+                    Thread.sleep(span);
                 } catch (Exception e) {
-                    e.printStackTrace();//输出异常堆栈信息
+                    e.printStackTrace();
                 }
             }
         }

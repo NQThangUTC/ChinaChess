@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:minWidth="300dp"
     android:layout_width="match_parent"
@@ -17,91 +18,13 @@
         android:textSize="30dp" />
 
     <RadioGroup
-        android:id="@+id/musicGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="center"
-        android:layout_marginRight="25dp"
-        android:layout_marginLeft="25dp">
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Âm nhạc"
-            android:textColor="#000000"
-            android:textSize="24dp" />
-
-        <RadioButton
-            android:id="@+id/musicTrue"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:soundEffectsEnabled="false"
-            android:text="Mở"
-            android:textColor="#000000"
-            android:textSize="24dp" />
-
-        <RadioButton
-            android:id="@+id/musicFalse"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:soundEffectsEnabled="false"
-            android:text="Đóng"
-            android:textColor="#000000"
-            android:textSize="24dp" />
-    </RadioGroup>
-
-    <RadioGroup
-        android:id="@+id/effectGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="center"
-        android:layout_marginRight="25dp"
-        android:layout_marginLeft="25dp">
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Hiệu ứng"
-            android:textColor="#000000"
-            android:textSize="24dp" />
-
-        <RadioButton
-            android:id="@+id/effectTrue"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:soundEffectsEnabled="false"
-            android:text="Mở"
-            android:textColor="#000000"
-            android:textSize="24dp" />
-
-        <RadioButton
-            android:id="@+id/effectFalse"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:soundEffectsEnabled="false"
-            android:text="Đóng"
-            android:textColor="#000000"
-            android:textSize="24dp" />
-    </RadioGroup>
-
-    <RadioGroup
         android:id="@+id/levelGroup"
-        android:layout_width="match_parent"
+        android:layout_width="395dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_gravity="center"
+        android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
-        android:layout_marginLeft="25dp">
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/textView5"
@@ -114,33 +37,36 @@
 
         <RadioButton
             android:id="@+id/level_1"
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:soundEffectsEnabled="false"
             android:text="Dễ"
             android:textColor="#000000"
-            android:textSize="24dp" />
+            android:textSize="20dp"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <RadioButton
             android:id="@+id/level_2"
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:soundEffectsEnabled="false"
             android:text="TB"
             android:textColor="#000000"
-            android:textSize="24dp" />
+            android:textSize="20dp"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <RadioButton
             android:id="@+id/level_3"
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:soundEffectsEnabled="false"
             android:text="Khó"
             android:textColor="#000000"
-            android:textSize="24dp" />
+            android:textSize="20dp"
+            tools:ignore="TouchTargetSizeCheck" />
     </RadioGroup>
 
     <LinearLayout

@@ -231,7 +231,6 @@ public class AI {
 
     }
 
-    //迭代加深
     public static Move getBestMove(int[][] piece, boolean isRedGo, int depth, int startZobristKey, long startZobristKeyCheck, Map<Long, Integer> ZobristInfo) {
         int[][] pieceClone = new int[10][9];
         for (int i = 0; i <= 9; i++) {
@@ -255,7 +254,7 @@ public class AI {
         return bestMove;
     }
 
-    //PVS+置换表+历史表
+
     public static Move getGoodMove(int[][] piece, boolean isRedGo, int depth, int startZobristKey, long startZobristKeyCheck, Map<Long, Integer> ZobristInfo) {
         Move goodMove = new Move(new Pos(-1, -1), new Pos(-1, -1));
 
